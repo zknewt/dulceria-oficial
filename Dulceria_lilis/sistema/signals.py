@@ -29,7 +29,9 @@ def auditar_creacion_modificacion(sender, instance, created, **kwargs):
 
     # Construimos el mensaje según el modelo
     if sender == Usuario:
-        texto = f"usuario '{instance.username}' (Rol: {instance.get_rol_display()})"
+        # ❌ QUITAR ESTO: texto = f"usuario '{instance.username}' (Rol: {instance.get_rol_display()})"
+        # ✅ USAR ESTO:
+        texto = f"usuario '{instance.username}' (Rol: {instance.rol or 'Sin rol'})"
     elif sender == Producto:
         texto = f"producto '{instance.sku}' - {instance.nombre}"
     elif sender == Proveedor:

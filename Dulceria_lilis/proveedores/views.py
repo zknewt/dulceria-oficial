@@ -86,7 +86,7 @@ class ProveedorListView(ListView):
             per_page_int = int(per_page)
         except (TypeError, ValueError):
             per_page_int = 10
-        if per_page_int not in (5, 10, 20):
+        if per_page_int not in (5, 10, 2000):
             per_page_int = 10
 
         paginator = Paginator(proveedores, per_page_int)

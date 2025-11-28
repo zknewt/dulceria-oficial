@@ -28,7 +28,7 @@ class MovimientoInventarioListCreateView(View):
 
         # ---- 1) Tomar valores desde GET (si vienen) ----
         tipo_get    = request.GET.get('tipo')
-        buscar_get  = request.GET.get('buscar')   # <--- NUEVO nombre de campo
+        buscar_get  = request.GET.get('buscar')
         bodega_get  = request.GET.get('bodega')
         pp_get      = request.GET.get('pp')
 
@@ -36,7 +36,7 @@ class MovimientoInventarioListCreateView(View):
         if request.GET.get("clear") == "1":
             for k in ("f_tipo", "f_buscar", "f_bodega", "f_pp"):
                 session.pop(k, None)
-            return qs, "", "", "", 5  # qs, tipo, buscar, bodega, per_page
+            return qs, "", "", "", 10  # ← CAMBIAR de 5 a 10 (default más razonable)
 
         # ---- 3) Si vienen filtros por GET, guardarlos en sesión ----
         if tipo_get is not None:
@@ -52,14 +52,13 @@ class MovimientoInventarioListCreateView(View):
         tipo    = session.get("f_tipo", "")
         buscar  = session.get("f_buscar", "")
         bodega  = session.get("f_bodega", "")
-        per_page = session.get("f_pp", "5")   # lo devolvemos como string, luego lo casteamos
+        per_page = session.get("f_pp", "10")  # ← CAMBIAR default de "5" a "10"
 
         # ---- 5) Aplicar filtros sobre el queryset ----
-
         if tipo:
             qs = qs.filter(tipo=tipo)
 
-        # 🔎 BUSCADOR: por SKU de producto o proveedor (razón social / nombre fantasía)
+        # 🔎 BUSCADOR: por SKU de producto o proveedor
         if buscar:
             qs = qs.filter(
                 Q(producto__sku__icontains=buscar) |
@@ -88,6 +87,9 @@ class MovimientoInventarioListCreateView(View):
 
         # ===== EXPORTAR EXCEL =====
         if request.GET.get("export") == "xlsx":
+            # Aplicar filtros antes de exportar
+            movimientos, _, _, _, _ = self._apply_filters(request, movimientos)
+            
             columns = [
                 ("Fecha",           lambda m: m.fecha.replace(tzinfo=None) if m.fecha else ""),
                 ("Tipo",            lambda m: m.tipo),
@@ -116,9 +118,11 @@ class MovimientoInventarioListCreateView(View):
         try:
             per_page_int = int(per_page)
         except (TypeError, ValueError):
-            per_page_int = 5
-        if per_page_int not in (5, 10, 20):
-            per_page_int = 5
+            per_page_int = 10  # ← CAMBIAR default de 5 a 10
+        
+        # 🔥 PERMITIR 2000 REGISTROS PARA PRUEBAS DE ESTRÉS
+        if per_page_int not in (5, 10, 20, 50, 100, 2000):  # ← AGREGAR 50, 100, 2000
+            per_page_int = 10
 
         paginator = Paginator(movimientos, per_page_int)
         page_number = request.GET.get('page')
@@ -149,10 +153,9 @@ class MovimientoInventarioListCreateView(View):
                 return redirect('inventario:inicio')
 
             except ValidationError as e:
-                # Manda el error al formulario
                 form.add_error(None, e.message)
-                # Manda el error como alerta
                 messages.error(request, f"❌ {e.message}")
+        
         if form.errors:
             messages.error(request, "⚠️ Por favor complete todos los campos obligatorios correctamente.")
 
@@ -160,16 +163,18 @@ class MovimientoInventarioListCreateView(View):
             'producto', 'bodega_origen', 'bodega_destino', 'usuario'
         ).order_by('-fecha')
         
-        movimientos, tipo, producto, bodega = self._apply_filters(request, movimientos)
+        movimientos, tipo, buscar, bodega, per_page = self._apply_filters(request, movimientos)
         
         try:
-            per_page = int(request.GET.get('pp') or 5)
-        except ValueError:
-            per_page = 5
-        if per_page not in (5, 10, 20):
-            per_page = 5
+            per_page_int = int(per_page)
+        except (TypeError, ValueError):
+            per_page_int = 10
+        
+        # 🔥 PERMITIR 2000 REGISTROS
+        if per_page_int not in (5, 10, 20, 50, 100, 2000):
+            per_page_int = 10
             
-        paginator = Paginator(movimientos, per_page)
+        paginator = Paginator(movimientos, per_page_int)
         page_obj = paginator.get_page(request.GET.get('page'))
 
         context = {
@@ -178,11 +183,12 @@ class MovimientoInventarioListCreateView(View):
             'movimientos': page_obj,
             'bodegas': Bodega.objects.all(),
             'f_tipo': tipo,
-            'f_producto': producto,
+            'f_buscar': buscar,
             'f_bodega': bodega,
-            'per_page': per_page,
+            'per_page': per_page_int,
         }
         return render(request, self.template_name, context)
+
 def productos_por_proveedor(request, proveedor_id):
     productos = ProductoProveedor.objects.filter(
         proveedor_id=proveedor_id

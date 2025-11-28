@@ -48,8 +48,8 @@
       <select name="pp" class="form-select" onchange="this.form.submit()">
         <option value="5"  {% if per_page == 5 %}selected{% endif %}>5</option>
         <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
-        <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
-        <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+        <option value="200" {% if per_page == 200 %}selected{% endif %}>200</option>
+        <option value="1500" {% if per_page == 1500 %}selected{% endif %}>1500</option>
       </select>
     </div>
 
@@ -196,7 +196,102 @@
   </div>
 
   <!-- 🧾 Formulario embebido (MANTENER IGUAL) -->
-  <!-- ... -->
+  <!-- 🧾 Formulario embebido -->
+  <div class="card shadow-sm">
+    <div class="card-header text-white" style="background-color:#c62828;">
+      <div class="d-flex justify-content-between align-items-center">
+        <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Formulario de Producto</h4>
+        <img src="{% static 'img/logo.png' %}" alt="Logo Dulcería Lili" width="40" height="40">
+      </div>
+    </div>
+
+    <div class="card-body bg-light">
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger mb-3">
+          {% for e in form.non_field_errors %}{{ e }}<br>{% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Tabs -->
+      <ul class="nav nav-tabs mb-3" id="prodTabs" role="tablist">
+        <li class="nav-item">
+          <button class="nav-link active" id="tab-id" data-bs-toggle="tab" data-bs-target="#pane-id" type="button">1. Identificación y precios</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="tab-stock" data-bs-toggle="tab" data-bs-target="#pane-stock" type="button">2. Stock y control</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="tab-rel" data-bs-toggle="tab" data-bs-target="#pane-rel" type="button">3. Relaciones y derivados</button>
+        </li>
+      </ul>
+
+      <form method="post" action="{% url 'productos:crear' %}" id="productoForm" novalidate>
+        {% csrf_token %}
+        <div class="tab-content">
+
+          <!-- 1) Identificación y precios -->
+          <div class="tab-pane fade show active" id="pane-id" role="tabpanel">
+            <div class="row g-3">
+              {% for field in form.visible_fields %}
+              {% if field.name == 'sku' or field.name == 'ean_upc' or field.name == 'nombre' or field.name == 'descripcion' or field.name == 'categoria' or field.name == 'marca' or field.name == 'modelo' or field.name == 'uom_compra' or field.name == 'uom_venta' or field.name == 'factor_conversion' or field.name == 'costo_estandar' or field.name == 'costo_promedio' or field.name == 'precio_venta' or field.name == 'impuesto_iva' %}
+              <div class="col-md-4">
+                    <label class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                      {% for error in field.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                      {% endfor %}
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- 2) Stock y control -->
+          <div class="tab-pane fade" id="pane-stock" role="tabpanel">
+            <div class="row g-3">
+              <div class="col-md-4">{{ form.stock_minimo.label_tag }} {{ form.stock_minimo }}</div>
+              <div class="col-md-4">{{ form.stock_maximo.label_tag }} {{ form.stock_maximo }}</div>
+              <div class="col-md-4">{{ form.punto_reorden.label_tag }} {{ form.punto_reorden }}</div>
+              <div class="col-md-4 form-check mt-4">{{ form.perishable }} <label class="form-check-label">Perishable</label></div>
+              <div class="col-md-4 form-check mt-4">{{ form.control_por_lote }} <label class="form-check-label">Control por lote</label></div>
+              <div class="col-md-4 form-check mt-4">{{ form.control_por_serie }} <label class="form-check-label">Control por serie</label></div>
+            </div>
+          </div>
+
+          <!-- 3) Relaciones y derivados -->
+          <div class="tab-pane fade" id="pane-rel" role="tabpanel">
+            <div class="row g-3">
+              <div class="col-md-6">{{ form.imagen_url.label_tag }} {{ form.imagen_url }}</div>
+              <div class="col-md-6">{{ form.ficha_tecnica_url.label_tag }} {{ form.ficha_tecnica_url }}</div>
+              <div class="col-md-6">{{ form.stock_actual.label_tag }} {{ form.stock_actual }}</div>
+              <div class="col-md-6">
+                <label class="form-label"> alerta bajo stock </label>
+                <input type="text" class="form-control" value="{% if form.instance.alerta_bajo_stock %}Sí{% else %}No{% endif %}" readonly>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Alerta Por Vencer</label>
+                <input type="text" class="form-control" 
+                       value="{% if form.instance.alerta_por_vencer %}Sí{% else %}No{% endif %}" readonly>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <div class="d-flex justify-content-end mt-4">
+          <button type="reset" class="btn btn-secondary me-2">
+            <i class="bi bi-eraser"></i> Limpiar
+          </button>
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-save"></i> Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
 </div>
 

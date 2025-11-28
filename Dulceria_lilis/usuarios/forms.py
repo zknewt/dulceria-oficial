@@ -60,11 +60,19 @@ class UsuarioForm(forms.ModelForm):
         ('BLOQUEADO', 'BLOQUEADO'),
         ('INACTIVO', 'INACTIVO'),
     ]
-
     
-    rol = models.CharField(max_length=20, choices=ROL_CHOICES)
-    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES)
-    email = models.EmailField(blank=True, null=True)
+    nombres = models.CharField("Nombres", max_length=150, blank=True, null=True)
+    apellidos = models.CharField("Apellidos", max_length=150, blank=True, null=True)
+    email = models.EmailField("Email", unique=True, blank=False, null=True)
+    telefono = models.CharField("Teléfono", max_length=30, blank=True, null=True)
+    rol = models.CharField(
+        "Rol", 
+        max_length=50, 
+        choices=ROL_CHOICES,  # <-- AGREGAR ESTO
+        default='Usuario', 
+        blank=True, 
+        null=True
+    )
 
     rol = forms.ChoiceField(
         choices=ROL_CHOICES,

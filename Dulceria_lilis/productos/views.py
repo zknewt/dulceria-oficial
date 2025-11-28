@@ -98,7 +98,7 @@ class ProductoListView(ListView):
             per_page_int = int(per_page)
         except (TypeError, ValueError):
             per_page_int = 10
-        if per_page_int not in (5, 10, 20, 50):
+        if per_page_int not in (5, 10, 200, 1500):
             per_page_int = 10
 
         paginator = Paginator(productos, per_page_int)
