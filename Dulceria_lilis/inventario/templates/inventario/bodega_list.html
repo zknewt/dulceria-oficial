@@ -1,0 +1,44 @@
+{% extends "usuarios/base.html" %}
+{% load static %}
+
+{% block title %}Lista de Bodegas{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">
+            <i class="bi bi-building"></i> Lista de Bodegas
+        </h2>
+        <a href="{% url 'inventario:inicio' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver a Movimientos
+        </a>
+    </div>
+
+    {% if bodegas %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle shadow-sm">
+            <thead class="table-primary">
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Ubicación</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bodega in bodegas %}
+                <tr>
+                    <td>{{ bodega.codigo }}</td>
+                    <td>{{ bodega.nombre }}</td>
+                    <td>{{ bodega.ubicacion }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center shadow-sm">
+        No hay bodegas registradas en el sistema.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

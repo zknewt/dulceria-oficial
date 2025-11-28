@@ -1,0 +1,218 @@
+<!-- productos/templates/productos/lista.html -->
+
+{% extends 'usuarios/base.html' %}
+{% load static %}
+
+{% block title %}Productos{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <!-- Encabezado -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold text-primary">
+      <i class="bi bi-box-seam"></i> Lista de Productos
+    </h2>
+  </div>
+  
+  <!-- 🔍 FILTROS CON BÚSQUEDA EN TIEMPO REAL -->
+  <form method="get" id="formFiltrosProductos" class="row g-2 align-items-end mb-3">
+    <div class="col-md-5">
+      <label class="form-label small fw-semibold">
+        🔍 Buscar (SKU o Nombre)
+      </label>
+      <div class="input-group">
+        <span class="input-group-text bg-white border-end-0">
+          <i class="bi bi-search text-primary"></i>
+        </span>
+        <input type="text" 
+               id="liveSearchProductos"
+               name="buscar" 
+               value="{{ buscar }}" 
+               class="form-control border-start-0" 
+               placeholder="Ej: SKU1, Alfajor..."
+               autocomplete="off">
+        <button type="button" 
+                class="btn btn-outline-secondary" 
+                data-clear-search
+                title="Limpiar búsqueda">
+          <i class="bi bi-x-circle"></i>
+        </button>
+      </div>
+      <small class="text-muted d-block mt-1">
+      </small>
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label small fw-semibold">Por página</label>
+      <select name="pp" class="form-select" onchange="this.form.submit()">
+        <option value="5"  {% if per_page == 5 %}selected{% endif %}>5</option>
+        <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+        <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+        <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+      </select>
+    </div>
+
+    <div class="col-md-2 d-grid">
+      <a class="btn btn-success" 
+         href="?{% if buscar %}buscar={{ buscar }}&{% endif %}pp={{ per_page }}&export=xlsx">
+        <i class="bi bi-file-earmark-excel"></i> Exportar
+      </a>
+    </div>
+
+    <div class="col-md-1 d-grid">
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-filter"></i>
+      </button>
+    </div>
+
+    <div class="col-md-2 d-grid">
+      <a href="?clear=1" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-clockwise"></i> Limpiar
+      </a>
+    </div>
+  </form>
+
+  <!-- ==== TABLA ==== -->
+  <div class="card shadow-sm mb-5">
+    <div class="card-body">
+      {% if productos %}
+      
+      <!-- Contador de resultados -->
+      <div class="alert alert-info d-flex align-items-center mb-3" role="alert">
+        <i class="bi bi-info-circle me-2"></i>
+        Mostrando {{ page_obj.start_index }} - {{ page_obj.end_index }} 
+        de <strong>{{ page_obj.paginator.count }}</strong> producto(s)
+        {% if busqueda_activa %}
+          para la búsqueda: <strong class="text-primary">"{{ buscar }}"</strong>
+        {% endif %}
+      </div>
+      
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-danger">
+            <tr>
+              <th>SKU</th>
+              <th>Nombre</th>
+              <th>Stock actual</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for pr in productos %}
+            <tr>
+              <td><strong>{{ pr.sku }}</strong></td>
+              <td>{{ pr.nombre }}</td>
+              <td>
+                {% if pr.alerta_bajo_stock %}
+                  <span class="badge bg-danger">{{ pr.stock_actual }}</span>
+                {% else %}
+                  <span class="badge bg-success">{{ pr.stock_actual }}</span>
+                {% endif %}
+              </td>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm" role="group">
+                  <a href="{% url 'productos:editar' pr.pk %}" class="btn btn-warning" title="Editar">
+                    <i class="bi bi-pencil-square"></i>
+                  </a>
+                  <a href="{% url 'productos:detalle' pr.pk %}" class="btn btn-info" title="Detalle">
+                    <i class="bi bi-info-circle"></i>
+                  </a>
+                  <button onclick="confirmarEliminacion('{{ pr.pk }}')" class="btn btn-danger" title="Eliminar">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ==== PAGINADOR ==== -->
+      {% if page_obj.has_other_pages %}
+      <nav aria-label="Paginación productos" class="mt-3">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ page_obj.previous_page_number }}&buscar={{ buscar }}&pp={{ per_page }}">
+                <i class="bi bi-chevron-left"></i>
+              </a>
+            </li>
+          {% else %}
+            <li class="page-item disabled">
+              <span class="page-link"><i class="bi bi-chevron-left"></i></span>
+            </li>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <li class="page-item active">
+                <span class="page-link">{{ num }}</span>
+              </li>
+            {% elif num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+              <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ num }}&buscar={{ buscar }}&pp={{ per_page }}">{{ num }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ page_obj.next_page_number }}&buscar={{ buscar }}&pp={{ per_page }}">
+                <i class="bi bi-chevron-right"></i>
+              </a>
+            </li>
+          {% else %}
+            <li class="page-item disabled">
+              <span class="page-link"><i class="bi bi-chevron-right"></i></span>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+      
+      <!-- Info de paginación -->
+      <div class="text-center text-muted small mt-2">
+        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+      </div>
+      {% endif %}
+
+      {% else %}
+        {% if busqueda_activa %}
+          <div class="alert alert-warning mb-0">
+            <i class="bi bi-search"></i>
+            No se encontraron productos para: <strong>"{{ buscar }}"</strong>
+          </div>
+        {% else %}
+          <div class="alert alert-info mb-0">
+            <i class="bi bi-inbox"></i> No hay productos registrados.
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 🧾 Formulario embebido (MANTENER IGUAL) -->
+  <!-- ... -->
+
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'js/live-search.js' %}"></script>
+<script>
+function confirmarEliminacion(id) {
+  Swal.fire({
+    title: '¿Eliminar producto?',
+    text: 'Esta acción no se puede deshacer.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  }).then((r) => { if (r.isConfirmed) window.location.href = `/productos/${id}/eliminar/`; });
+}
+</script>
+{% endblock %}

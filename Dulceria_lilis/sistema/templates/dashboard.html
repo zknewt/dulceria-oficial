@@ -1,0 +1,186 @@
+{% extends "usuarios/base.html" %}
+
+{% block title %}Panel Principal | Dulcería Lili{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <h2 class="mb-4 fw-semibold text-center text-danger">Bienvenido, {{ user.username }}</h2>
+    <p class="text-center text-muted mb-5">Panel de control — <strong>Dulcería Lili</strong></p>
+
+    <!-- Tarjetas de resumen -->
+    <div class="row g-4">
+        {% if perms.productos.view_producto %}
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-box-seam display-5 text-primary"></i>
+                    <h5 class="mt-3 mb-1">Productos</h5>
+                    <p class="text-muted small">Total disponibles</p>
+                    <h4 class="fw-bold text-dark">{{ total_productos|default:"0" }}</h4>
+                    <a href="{% url 'productos:lista' %}" class="btn btn-outline-primary btn-sm mt-3">Ver productos</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if perms.proveedores.view_proveedor %}
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-truck display-5 text-success"></i>
+                    <h5 class="mt-3 mb-1">Proveedores</h5>
+                    <p class="text-muted small">Activos</p>
+                    <h4 class="fw-bold text-dark">{{ total_proveedores|default:"0" }}</h4>
+                    <a href="{% url 'proveedores:lista' %}" class="btn btn-outline-success btn-sm mt-3">Ver proveedores</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if perms.inventario.view_bodega %}
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-clipboard-data display-5 text-warning"></i>
+                    <h5 class="mt-3 mb-1">Inventario</h5>
+                    <p class="text-muted small">Movimientos registrados</p>
+                    <h4 class="fw-bold text-dark">{{ total_inventario|default:"0" }}</h4>
+                    <a href="{% url 'inventario:inicio' %}" class="btn btn-outline-warning btn-sm mt-3">Ir a inventario</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-bar-chart-line display-5 text-danger"></i>
+                    <h5 class="mt-3 mb-1">Visitas Web</h5>
+                    <p class="text-muted small">Conteo acumulado</p>
+                    <h4 class="fw-bold text-dark">{{ visitas|default:"0" }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección inferior (gráficos + tabla ejemplo) -->
+    <!-- Sección inferior (gráficos + tabla ejemplo) -->
+<div class="row mt-5 g-4">
+
+    {% if perms.sistema.ver_grafica %}
+
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-header bg-white fw-semibold">
+                <i class="bi bi-pie-chart-fill text-danger"></i> Distribución General de Datos
+            </div>
+            <div class="card-body d-flex justify-content-center">
+              <canvas id="chartProductos" style="max-width: 400px; max-height: 400px;"></canvas>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if perms.sistema.ver_actividad %}
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-header bg-white fw-semibold">
+                <i class="bi bi-calendar-event text-primary"></i> Actividad reciente
+            </div>
+            <div class="card-body">
+                <table class="table table-sm align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Evento</th>
+                            <th>Usuario</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs_recientes %}
+                        <tr>
+                            <td>{{ log.fecha|date:"d/m/Y" }}</td>
+                            <td>{{ log.descripcion }}</td>
+                            <td>{{ log.usuario }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="text-center text-muted">No hay registros recientes</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+</div>
+
+<!-- Asegúrate de que Chart.js está incluido -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('chartProductos');
+    if (ctx) {
+        // Crear el gráfico inicial
+        let chart = new Chart(ctx, {
+            type: 'doughnut',  // Tipo de gráfico: doughnut (círculo)
+            data: {
+                labels: [],  // Se llenarán con las categorías desde el servidor
+                datasets: [{
+                    data: [],  // Los datos vacíos por ahora
+                    backgroundColor: ['#a4161a', '#f39c12', '#28a745', '#6c757d']
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { position: 'bottom' }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Función para actualizar el gráfico
+        function actualizarGrafico() {
+            fetch("{% url 'dashboard' %}", {  // Llamada AJAX a la misma vista de dashboard
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'  // Marcar la solicitud como AJAX
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Actualizar las etiquetas y los datos del gráfico
+                chart.data.labels = data.categorias;
+                chart.data.datasets[0].data = data.data_categorias;
+
+                // Hacer que el gráfico se actualice
+                chart.update();
+            })
+            .catch(error => {
+                console.error('Error al obtener los datos:', error);
+            });
+        }
+
+        // Llamar a la función de actualización inicialmente
+        actualizarGrafico();
+
+        // Si quieres actualizar el gráfico automáticamente cada 5 segundos
+        setInterval(actualizarGrafico, 5000);  // Cada 5 segundos
+    } else {
+        console.error("No se ha encontrado el elemento con id 'chartProductos'.");
+    }
+});
+</script>
+
+
+
+
+
+
+
+
+{% endblock %}

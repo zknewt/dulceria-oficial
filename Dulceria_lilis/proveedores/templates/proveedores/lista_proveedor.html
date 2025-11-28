@@ -1,0 +1,379 @@
+{% extends 'usuarios/base.html' %}
+{% load static %}
+
+{% block title %}Proveedores{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <!-- Encabezado -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold text-primary">
+      <i class="bi bi-building"></i> Lista de Proveedores
+    </h2>
+  </div>
+
+  <!-- ==== FILTROS ==== -->
+  <form method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-md-5">
+      <label class="form-label small fw-semibold">Buscar (RUT/NIF o Razón Social)</label>
+      <input type="text" name="buscar_Rut_Nif" value="{{ buscar_Rut_Nif }}" class="form-control" 
+             placeholder="Ej: 12345678-9, Distribuidora XYZ, etc.">
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label small fw-semibold">Por página</label>
+      <select name="pp" class="form-select" onchange="this.form.submit()">
+        <option value="5"  {% if per_page == 5 %}selected{% endif %}>5</option>
+        <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+        <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+      </select>
+    </div>
+
+    <div class="col-md-2 d-grid">
+      <a class="btn btn-success" 
+         href="?{% if buscar_Rut_Nif %}buscar_Rut_Nif={{ buscar_Rut_Nif }}&{% endif %}pp={{ per_page }}&export=xlsx">
+        <i class="bi bi-file-earmark-excel"></i> Exportar
+      </a>
+    </div>
+
+    <div class="col-md-1 d-grid">
+      <button class="btn btn-primary"><i class="bi bi-filter"></i> Filtrar</button>
+    </div>
+
+    <div class="col-md-2 d-grid">
+      <a href="?clear=1" class="btn btn-outline-secondary">
+        <i class="bi bi-x-circle"></i> Limpiar
+      </a>
+    </div>
+  </form>
+
+  <!-- ==== TABLA ==== -->
+  <div class="card shadow-sm mb-5">
+    <div class="card-body">
+      {% if proveedores %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-danger">
+            <tr>
+              <th>RUT/NIF</th>
+              <th>Razón social</th>
+              <th>Estado</th>
+              <th>Email</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in proveedores %}
+            <tr>
+              <td>{{ p.rut_nif }}</td>
+              <td>{{ p.razon_social }}</td>
+              <td>
+                {% if p.estado == 'ACTIVO' %}
+                  <span class="badge bg-success">ACTIVO</span>
+                {% elif p.estado == 'BLOQUEADO' %}
+                  <span class="badge bg-danger">BLOQUEADO</span>
+                {% else %}
+                  <span class="badge bg-secondary">{{ p.estado }}</span>
+                {% endif %}
+              </td>
+              <td>{{ p.email|default:"—" }}</td>
+              <td class="text-center">
+                <a href="{% url 'proveedores:editar' p.id %}" class="btn btn-sm btn-warning" title="Editar">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                <button onclick="confirmarEliminacion('{{ p.id }}')" class="btn btn-sm btn-danger" title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </button>
+                <a href="{% url 'proveedores:detalle' p.id %}" class="btn btn-sm btn-info" title="Detalle">
+                  <i class="bi bi-info-circle"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ==== PAGINADOR ==== -->
+      {% if page_obj.has_other_pages %}
+      <nav aria-label="Paginación proveedores" class="mt-3">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ page_obj.previous_page_number }}&buscar_Rut_Nif={{ buscar_Rut_Nif }}&pp={{ per_page }}">«</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">«</span></li>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+              <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ num }}&buscar_Rut_Nif={{ buscar_Rut_Nif }}&pp={{ per_page }}">{{ num }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ page_obj.next_page_number }}&buscar_Rut_Nif={{ buscar_Rut_Nif }}&pp={{ per_page }}">»</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">»</span></li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+
+      {% else %}
+        <div class="alert alert-info mb-0">No hay proveedores registrados.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- FORMULARIO EMBEBIDO -->
+  <div class="card shadow-sm">
+    <div class="card-header text-white" style="background-color:#c62828;">
+      <div class="d-flex justify-content-between align-items-center">
+        <h4 class="mb-0"><i class="bi bi-person-plus"></i> Formulario de Proveedor</h4>
+        <img src="{% static 'img/logo.png' %}" width="40" height="40">
+      </div>
+    </div>
+
+    <div class="card-body bg-light">
+
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger mb-3">
+        {% for e in form.non_field_errors %}{{ e }}<br>{% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- PESTAÑAS -->
+      <ul class="nav nav-tabs mb-3" id="provTabs" role="tablist">
+        <li class="nav-item">
+          <button class="nav-link active" id="tab-ident" data-bs-toggle="tab" data-bs-target="#pane-ident">
+            1. Identificación & Contacto
+          </button>
+        </li>
+
+        <li class="nav-item">
+          <button class="nav-link" id="tab-comercial" data-bs-toggle="tab" data-bs-target="#pane-comercial">
+            2. Dirección & Comercial
+          </button>
+        </li>
+
+        <li class="nav-item">
+          <button class="nav-link" id="tab-relacion" data-bs-toggle="tab" data-bs-target="#pane-relacion">
+            3. Relación con Productos
+          </button>
+        </li>
+      </ul>
+
+      <form method="post"  novalidate>
+        {% csrf_token %}
+        <div class="tab-content">
+
+          <!-- ========== TAB 1 ========== -->
+          <div class="tab-pane fade show active" id="pane-ident" role="tabpanel" aria-labelledby="tab-ident">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">RUT/NIF<span class="text-danger">*</span></label>
+                {{ form.rut_nif }}
+                {% for e in form.rut_nif.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Razón social<span class="text-danger">*</span></label>
+                {{ form.razon_social }}
+                {% for e in form.razon_social.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Nombre fantasía</label>
+                {{ form.nombre_fantasia }}
+                {% for e in form.nombre_fantasia.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Email<span class="text-danger">*</span></label>
+                {{ form.email }}
+                {% for e in form.email.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Teléfono</label>
+                {{ form.telefono }}
+                {% for e in form.telefono.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Sitio web</label>
+                {{ form.sitio_web }}
+                {% for e in form.sitio_web.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <!-- ========== TAB 2 ========== -->
+          <div class="tab-pane fade" id="pane-comercial">
+            <div class="row g-3">
+
+              <div class="col-md-6">
+                <label class="form-label">Dirección</label>
+                {{ form.direccion }}
+                {% for e in form.direccion.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label">Ciudad</label>
+                {{ form.ciudad }}
+                {% for e in form.ciudad.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label">País</label>
+                {{ form.pais }}
+                {% for e in form.pais.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Condiciones de Pago *</label>
+                {{ form.condiciones_pago }}
+                {%  for e in form.condiciones_pago.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Moneda *</label>
+                {{ form.moneda }}
+                {% for e in form.moneda.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Estado</label>
+                {{ form.estado }}
+                {%  for e in form.estado.errors %}<div class="text-danger small">{{ e }}</div>{% endfor  %}
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ========== TAB 3 ========== -->
+          <div class="tab-pane fade" id="pane-relacion">
+
+            <h5 class="fw-bold text-secondary">Relación con Productos</h5>
+            <div class="alert alert-info">
+              Asocia este proveedor a un producto, registrando costo, lead time y si es preferente.
+            </div>
+          
+            <div class="row g-3">
+          
+              <div class="col-md-4">
+                <label class="form-label">Producto</label>
+                <select name="{{ rel_form.producto_rel.html_name }}" 
+                        class="form-select producto-rel-select">
+                    {% for prod in rel_form.fields.producto_rel.queryset %}
+                        <option value="{{ prod.id }}"
+                                data-costo="{{ prod.costo_estandar }}">
+                            {{ prod.sku }} - {{ prod.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+                {% for e in rel_form.producto_rel.errors %}
+                    <div class="text-danger small">{{ e }}</div>
+                {% endfor %}
+              </div>
+          
+              <div class="col-md-4">
+                <label class="form-label">Costo</label>
+                <input type="number" 
+                        name="{{ rel_form.costo_rel.html_name }}" 
+                        class="form-control costo-rel-input" 
+                        step="0.01"
+                        value="{{ rel_form.initial.costo_rel|default_if_none:'' }}">
+                {% for e in rel_form.costo_rel.errors %}
+                  <div class="text-danger small">{{ e }}</div>
+                {% endfor %}
+              </div>
+          
+              <div class="col-md-4">
+                <label class="form-label">Lead Time (días)</label>
+                {{ rel_form.lead_time_rel }}
+                {% for e in rel_form.lead_time_rel.errors %}
+                    <div class="text-danger small">{{ e }}</div>
+                {% endfor %}
+              </div>
+          
+              <div class="col-md-4">
+                <label class="form-label">Min Lote</label>
+                {{ rel_form.min_lote_rel }}
+                {% for e in rel_form.min_lote_rel.errors %}
+                    <div class="text-danger small">{{ e }}</div>
+                {% endfor %}
+              </div>
+          
+              <div class="col-md-4">
+                <label class="form-label">Descuento (%)</label>
+                {{ rel_form.descuento_rel }}
+                {% for e in rel_form.descuento_rel.errors %}
+                    <div class="text-danger small">{{ e }}</div>
+                {% endfor %}
+              </div>
+          
+              <div class="col-md-4 form-check mt-4 pt-2">
+                {{ rel_form.preferente_rel }}
+                <label class="form-check-label">Proveedor preferente</label>
+              </div>
+          
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ACCIONES -->
+        <div class="d-flex justify-content-end mt-4">
+          <button type="reset" class="btn btn-secondary me-2">
+            <i class="bi bi-eraser"></i> Limpiar
+          </button>
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-save"></i> Guardar
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<!-- Confirmación SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmarEliminacion(id) {
+  Swal.fire({
+    title: '¿Eliminar Proveedor?',
+    text: 'Esta acción no se puede deshacer.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  }).then((res) => { if (res.isConfirmed) window.location.href = `/proveedores/${id}/eliminar/`; })
+}
+
+document.addEventListener("change", function (e) {
+    if (e.target.classList.contains("producto-rel-select")) {
+
+        const option = e.target.options[e.target.selectedIndex];
+        const costo = option.getAttribute("data-costo");
+
+        const costoInput = document.querySelector(".costo-rel-input");
+
+        if (costoInput && costo) {
+            costoInput.value = parseFloat(costo).toFixed(2);
+        }
+    }
+});
+
+</script>
+
+{% endblock %}

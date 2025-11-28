@@ -1,0 +1,78 @@
+{% extends "usuarios/base.html" %}
+{% load static %}
+
+{% block title %}Iniciar sesión - Dulcería Lili{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 85vh;">
+    <div class="card shadow-lg p-4" style="width: 400px; border-radius: 15px;">
+        <div class="text-center mb-3">
+            <img src="{% static 'img/logo.png' %}" alt="Logo Dulcería Lili" width="100" class="mb-2">
+            <h2 class="h5 fw-bold text-danger mb-0">Dulcería Lili</h2>
+            <p class="text-muted small">Inicia sesión para continuar</p>
+        </div>
+
+        <!-- MENSAJE DE BLOQUEO CON TIEMPO RESTANTE (dinámico) -->
+        {% if request.axes_locked_out %}
+            {% if request.axes_remaining_time %}
+                <div class="alert alert-danger py-3 text-center mb-3">
+                    <i class="bi bi-lock-fill fs-4"></i><br><br>
+                    <strong>Cuenta bloqueada temporalmente</strong><br>
+                    <small class="text-white">
+                        Demasiados intentos fallidos.<br>
+                        Podrás intentarlo de nuevo en <strong>{{ request.axes_remaining_time }}</strong>.
+                    </small>
+                </div>
+            {% else %}
+                <div class="alert alert-danger py-3 text-center mb-3">
+                    <i class="bi bi-lock-fill fs-4"></i><br><br>
+                    <strong>Cuenta bloqueada temporalmente</strong><br>
+                    <small class="text-white">Demasiados intentos fallidos. Intenta más tarde.</small>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- Errores generales del formulario -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger py-2 mb-3">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <form method="post" novalidate {% if request.axes_locked_out %}inert{% endif %}>
+            {% csrf_token %}
+
+            <div class="mb-3 input-group">
+                <span class="input-group-text bg-white border-0">
+                    <i class="bi bi-person-fill text-danger"></i>
+                </span>
+                {{ form.username }}
+            </div>
+            {% if form.username.errors %}
+                <div class="text-danger small mb-2">{{ form.username.errors|join:"<br>" }}</div>
+            {% endif %}
+
+            <div class="mb-3 input-group">
+                <span class="input-group-text bg-white border-0">
+                    <i class="bi bi-lock-fill text-danger"></i>
+                </span>
+                {{ form.password }}
+            </div>
+            {% if form.password.errors %}
+                <div class="text-danger small mb-2">{{ form.password.errors|join:"<br>" }}</div>
+            {% endif %}
+
+            <button class="btn btn-danger w-100 fw-semibold mt-3 shadow-sm" type="submit"
+                    {% if request.axes_locked_out %}disabled{% endif %}>
+                <i class="bi bi-box-arrow-in-right"></i> Entrar
+            </button>
+
+            <div class="text-center mt-3">
+                <a href="{% url 'usuarios:password_reset' %}" class="text-decoration-none text-muted small">
+                    <i class="bi bi-question-circle"></i> ¿Olvidaste tu contraseña?
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

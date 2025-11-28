@@ -1,0 +1,48 @@
+{% extends 'usuarios/base.html' %}
+
+{% block title %}Cambiar Clave Temporal{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white text-center">
+                    <h4>Cambio de Clave Obligatorio</h4>
+                </div>
+
+                <div class="card-body">
+                    <p class="text-danger fw-bold">
+                        Esta es tu primera vez ingresando con una clave temporal. Por seguridad, debes cambiarla ahora.
+                    </p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                                <div class="mb-3">
+                                    <label>Clave actual (temporal)</label>
+                                    {{ form.old_password }}
+                                    {{ form.old_password.errors }}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Nueva clave</label>
+                                    {{ form.new_password1 }}
+                                    {{ form.new_password1.errors }}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Repetir nueva clave</label>
+                                    {{ form.new_password2 }}
+                                    {{ form.new_password2.errors }}
+                                </div>
+                        <button type="submit" class="btn btn-danger w-100">
+                            Cambiar Clave y Continuar
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,674 @@
+[
+{
+    "model": "auth.permission",
+    "pk": 1,
+    "fields": {
+        "name": "Can add log entry",
+        "content_type": 1,
+        "codename": "add_logentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 2,
+    "fields": {
+        "name": "Can change log entry",
+        "content_type": 1,
+        "codename": "change_logentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 3,
+    "fields": {
+        "name": "Can delete log entry",
+        "content_type": 1,
+        "codename": "delete_logentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 4,
+    "fields": {
+        "name": "Can view log entry",
+        "content_type": 1,
+        "codename": "view_logentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 5,
+    "fields": {
+        "name": "Can add permission",
+        "content_type": 2,
+        "codename": "add_permission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 6,
+    "fields": {
+        "name": "Can change permission",
+        "content_type": 2,
+        "codename": "change_permission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 7,
+    "fields": {
+        "name": "Can delete permission",
+        "content_type": 2,
+        "codename": "delete_permission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 8,
+    "fields": {
+        "name": "Can view permission",
+        "content_type": 2,
+        "codename": "view_permission"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 9,
+    "fields": {
+        "name": "Can add group",
+        "content_type": 3,
+        "codename": "add_group"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 10,
+    "fields": {
+        "name": "Can change group",
+        "content_type": 3,
+        "codename": "change_group"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 11,
+    "fields": {
+        "name": "Can delete group",
+        "content_type": 3,
+        "codename": "delete_group"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 12,
+    "fields": {
+        "name": "Can view group",
+        "content_type": 3,
+        "codename": "view_group"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 13,
+    "fields": {
+        "name": "Can add content type",
+        "content_type": 4,
+        "codename": "add_contenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 14,
+    "fields": {
+        "name": "Can change content type",
+        "content_type": 4,
+        "codename": "change_contenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 15,
+    "fields": {
+        "name": "Can delete content type",
+        "content_type": 4,
+        "codename": "delete_contenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 16,
+    "fields": {
+        "name": "Can view content type",
+        "content_type": 4,
+        "codename": "view_contenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 17,
+    "fields": {
+        "name": "Can add session",
+        "content_type": 5,
+        "codename": "add_session"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 18,
+    "fields": {
+        "name": "Can change session",
+        "content_type": 5,
+        "codename": "change_session"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 19,
+    "fields": {
+        "name": "Can delete session",
+        "content_type": 5,
+        "codename": "delete_session"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 20,
+    "fields": {
+        "name": "Can view session",
+        "content_type": 5,
+        "codename": "view_session"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 21,
+    "fields": {
+        "name": "Can add user",
+        "content_type": 6,
+        "codename": "add_usuario"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 22,
+    "fields": {
+        "name": "Can change user",
+        "content_type": 6,
+        "codename": "change_usuario"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 23,
+    "fields": {
+        "name": "Can delete user",
+        "content_type": 6,
+        "codename": "delete_usuario"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 24,
+    "fields": {
+        "name": "Can view user",
+        "content_type": 6,
+        "codename": "view_usuario"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 25,
+    "fields": {
+        "name": "Can add producto",
+        "content_type": 7,
+        "codename": "add_producto"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 26,
+    "fields": {
+        "name": "Can change producto",
+        "content_type": 7,
+        "codename": "change_producto"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 27,
+    "fields": {
+        "name": "Can delete producto",
+        "content_type": 7,
+        "codename": "delete_producto"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 28,
+    "fields": {
+        "name": "Can view producto",
+        "content_type": 7,
+        "codename": "view_producto"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 29,
+    "fields": {
+        "name": "Can add bodega",
+        "content_type": 8,
+        "codename": "add_bodega"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 30,
+    "fields": {
+        "name": "Can change bodega",
+        "content_type": 8,
+        "codename": "change_bodega"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 31,
+    "fields": {
+        "name": "Can delete bodega",
+        "content_type": 8,
+        "codename": "delete_bodega"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 32,
+    "fields": {
+        "name": "Can view bodega",
+        "content_type": 8,
+        "codename": "view_bodega"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 33,
+    "fields": {
+        "name": "Can add lote",
+        "content_type": 9,
+        "codename": "add_lote"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 34,
+    "fields": {
+        "name": "Can change lote",
+        "content_type": 9,
+        "codename": "change_lote"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 35,
+    "fields": {
+        "name": "Can delete lote",
+        "content_type": 9,
+        "codename": "delete_lote"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 36,
+    "fields": {
+        "name": "Can view lote",
+        "content_type": 9,
+        "codename": "view_lote"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 37,
+    "fields": {
+        "name": "Can add movimiento inventario",
+        "content_type": 10,
+        "codename": "add_movimientoinventario"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 38,
+    "fields": {
+        "name": "Can change movimiento inventario",
+        "content_type": 10,
+        "codename": "change_movimientoinventario"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 39,
+    "fields": {
+        "name": "Can delete movimiento inventario",
+        "content_type": 10,
+        "codename": "delete_movimientoinventario"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 40,
+    "fields": {
+        "name": "Can view movimiento inventario",
+        "content_type": 10,
+        "codename": "view_movimientoinventario"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 41,
+    "fields": {
+        "name": "Can add proveedor",
+        "content_type": 11,
+        "codename": "add_proveedor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 42,
+    "fields": {
+        "name": "Can change proveedor",
+        "content_type": 11,
+        "codename": "change_proveedor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 43,
+    "fields": {
+        "name": "Can delete proveedor",
+        "content_type": 11,
+        "codename": "delete_proveedor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 44,
+    "fields": {
+        "name": "Can view proveedor",
+        "content_type": 11,
+        "codename": "view_proveedor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 45,
+    "fields": {
+        "name": "Can add producto proveedor",
+        "content_type": 12,
+        "codename": "add_productoproveedor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 46,
+    "fields": {
+        "name": "Can change producto proveedor",
+        "content_type": 12,
+        "codename": "change_productoproveedor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 47,
+    "fields": {
+        "name": "Can delete producto proveedor",
+        "content_type": 12,
+        "codename": "delete_productoproveedor"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 48,
+    "fields": {
+        "name": "Can view producto proveedor",
+        "content_type": 12,
+        "codename": "view_productoproveedor"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 1,
+    "fields": {
+        "app_label": "admin",
+        "model": "logentry"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 2,
+    "fields": {
+        "app_label": "auth",
+        "model": "permission"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 3,
+    "fields": {
+        "app_label": "auth",
+        "model": "group"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 4,
+    "fields": {
+        "app_label": "contenttypes",
+        "model": "contenttype"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 5,
+    "fields": {
+        "app_label": "sessions",
+        "model": "session"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 6,
+    "fields": {
+        "app_label": "usuarios",
+        "model": "usuario"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 7,
+    "fields": {
+        "app_label": "productos",
+        "model": "producto"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 8,
+    "fields": {
+        "app_label": "inventario",
+        "model": "bodega"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 9,
+    "fields": {
+        "app_label": "inventario",
+        "model": "lote"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 10,
+    "fields": {
+        "app_label": "inventario",
+        "model": "movimientoinventario"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 11,
+    "fields": {
+        "app_label": "proveedores",
+        "model": "proveedor"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 12,
+    "fields": {
+        "app_label": "proveedores",
+        "model": "productoproveedor"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "g87pz4g7y3j3aimlynzj4nxtttgwz8yj",
+    "fields": {
+        "session_data": ".eJxVjMsOwiAQRf-FtSHyaIEu3fsNZAYYQQ1NCnVj_HfbpAvd3nPueTMPa89-bWnxJbKJCXb63RDCI9UdxDvU28zDXPtSkO8KP2jj1zmm5-Vw_wIZWt7eAZK12jpQDgkRiExASRgUJjIohdYxGhSohnFMRIKkVkYGYZ1058Fu0VdppUNjk9SfLyXRPOA:1vA09b:vOw84EPztFVV2AuE8AewCED8YotCZaESHGTS37l4YKM",
+        "expire_date": "2025-10-18T08:10:59.561Z"
+    }
+},
+{
+    "model": "usuarios.usuario",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$hOf6hBEC2YE62jCdNWNVZ9$p1puDVzYdSLvIGNBR3icXTJlOmEWfiBXkZbeeAM2sI8=",
+        "last_login": "2025-10-18T04:46:55.521Z",
+        "is_superuser": true,
+        "username": "admin",
+        "first_name": "",
+        "last_name": "",
+        "email": "admin@gml.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2025-10-18T04:46:36.115Z",
+        "nombres": null,
+        "apellidos": null,
+        "telefono": null,
+        "rol": "Usuario",
+        "estado": "ACTIVO",
+        "mfa_habilitado": false,
+        "ultimo_acceso": null,
+        "area": null,
+        "observaciones": null,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "productos.producto",
+    "pk": 1,
+    "fields": {
+        "sku": "CD1",
+        "ean_upc": null,
+        "nombre": "gabriel",
+        "descripcion": "",
+        "categoria": "Papaya",
+        "marca": "lili",
+        "modelo": "cajas",
+        "uom_compra": "UN",
+        "uom_venta": "UN",
+        "factor_conversion": "20.0000",
+        "costo_estandar": "100.00",
+        "costo_promedio": null,
+        "precio_venta": "50.00",
+        "impuesto_iva": "19.00",
+        "stock_minimo": "1.00",
+        "stock_maximo": "10.00",
+        "punto_reorden": "1.00",
+        "perishable": true,
+        "control_por_lote": true,
+        "control_por_serie": true,
+        "imagen_url": null,
+        "ficha_tecnica_url": null,
+        "stock_actual": "0.00"
+    }
+},
+{
+    "model": "productos.producto",
+    "pk": 2,
+    "fields": {
+        "sku": "CD4",
+        "ean_upc": null,
+        "nombre": "Javier",
+        "descripcion": "",
+        "categoria": "Papaya",
+        "marca": "lili",
+        "modelo": null,
+        "uom_compra": "UN",
+        "uom_venta": "UN",
+        "factor_conversion": "1.0000",
+        "costo_estandar": null,
+        "costo_promedio": null,
+        "precio_venta": null,
+        "impuesto_iva": "19.00",
+        "stock_minimo": "0.00",
+        "stock_maximo": null,
+        "punto_reorden": null,
+        "perishable": false,
+        "control_por_lote": false,
+        "control_por_serie": false,
+        "imagen_url": null,
+        "ficha_tecnica_url": null,
+        "stock_actual": "0.00"
+    }
+},
+{
+    "model": "productos.producto",
+    "pk": 5,
+    "fields": {
+        "sku": "CD3",
+        "ean_upc": null,
+        "nombre": "Javier",
+        "descripcion": "",
+        "categoria": "Papaya",
+        "marca": "lili",
+        "modelo": "cajas",
+        "uom_compra": "UN",
+        "uom_venta": "UN",
+        "factor_conversion": "1.0000",
+        "costo_estandar": null,
+        "costo_promedio": null,
+        "precio_venta": null,
+        "impuesto_iva": "19.00",
+        "stock_minimo": "0.00",
+        "stock_maximo": null,
+        "punto_reorden": null,
+        "perishable": false,
+        "control_por_lote": false,
+        "control_por_serie": false,
+        "imagen_url": null,
+        "ficha_tecnica_url": null,
+        "stock_actual": "0.00"
+    }
+},
+{
+    "model": "proveedores.proveedor",
+    "pk": 1,
+    "fields": {
+        "rut_nif": "21983048-3",
+        "razon_social": "negro",
+        "nombre_fantasia": "papayero",
+        "email": "papayero@gmail.com",
+        "telefono": "987654321",
+        "sitio_web": "http://miguel.cl",
+        "direccion": "calle",
+        "ciudad": "penka",
+        "pais": "Chile",
+        "condiciones_pago": "EFECTIVO",
+        "moneda": "CLP",
+        "contacto_principal_nombre": null,
+        "contacto_principal_email": null,
+        "contacto_principal_telefono": null,
+        "estado": "ACTIVO",
+        "observaciones": ""
+    }
+}
+]

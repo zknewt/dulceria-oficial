@@ -1,0 +1,62 @@
+{% extends "usuarios/base.html" %}
+{% load static %}
+{% block title %}Mi Perfil - Dulcería Lili{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: #b31b1b;">
+          <div class="text-center w-100">
+            <img src="{% static 'img/logo.png' %}" alt="Logo Dulcería Lili" width="70" class="mb-2">
+            <h3 class="mb-0 fw-bold">Mi Perfil</h3>
+          </div>
+        </div>
+
+        <div class="card-body bg-light">
+          <div class="text-center mb-3">
+            <img src="{{ request.user.avatar_url }}" alt="avatar" class="rounded-circle shadow" style="width:80px;height:80px;object-fit:cover;">
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between">
+              <strong>Usuario:</strong> <span>{{ user.username }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <strong>Email:</strong> <span>{{ user.email|default:"No registrado" }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <strong>Nombre:</strong>
+              <span>
+                {% if user.nombres or user.apellidos %}
+                  {{ user.nombres }} {{ user.apellidos }}
+                {% else %}
+                  No registrado
+                {% endif %}
+              </span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <strong>Teléfono:</strong> <span>{{ user.telefono|default:"—" }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <strong>Rol:</strong> <span>{{ user.rol|default:"No asignado" }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <strong>Último acceso:</strong> <span>{{ user.last_login|date:"d/m/Y H:i" }}</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card-footer text-center bg-white">
+          <a href="{% url 'usuarios:perfil_editar' %}" class="btn btn-primary me-2">
+            <i class="bi bi-pencil-square"></i> Editar
+            </a>
+          <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary mt-2">
+            <i class="bi bi-arrow-left-circle"></i> Volver al Panel
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block title %}Confirmar Eliminación{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <div class="card shadow-lg" style="border-radius: 12px;">
+        <div class="card-header text-white" style="background-color: #c62828;">
+            <h4><i class="bi bi-exclamation-triangle"></i> Confirmar Eliminación</h4>
+        </div>
+        <div class="card-body">
+            <p class="fs-5">¿Está seguro que desea eliminar el producto <strong>{{ object.nombre }}</strong>?</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Eliminar
+                </button>
+                <a href="{% url 'productos:lista' %}" class="btn btn-secondary ms-2">
+                    <i class="bi bi-arrow-left"></i> Cancelar
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

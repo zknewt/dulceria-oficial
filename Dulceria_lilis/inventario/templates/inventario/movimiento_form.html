@@ -1,0 +1,135 @@
+{% extends "usuarios/base.html" %}
+{% load static %}
+
+{% block title %}Editar Movimiento de Inventario{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <div class="card shadow-sm">
+    <div class="card-header text-white" style="background-color:#c62828;">
+      <div class="d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">
+          <i class="bi bi-pencil-square"></i>
+          {% if object %}Editar{% else %}Registrar{% endif %} Movimiento
+        </h4>
+        <img src="{% static 'img/logo.png' %}" alt="Logo Dulcería Lili" width="40" height="40">
+      </div>
+    </div>
+
+    <div class="card-body bg-light">
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+          {% for error in form.non_field_errors %}
+            {{ error }}<br>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs mb-3" id="movTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="tab-general" data-bs-toggle="tab" data-bs-target="#pane-general" type="button" role="tab">
+            1. Datos Generales
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab-detalle" data-bs-toggle="tab" data-bs-target="#pane-detalle" type="button" role="tab">
+            2. Detalle y Control
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab-ref" data-bs-toggle="tab" data-bs-target="#pane-ref" type="button" role="tab">
+            3. Observaciones
+          </button>
+        </li>
+      </ul>
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="tab-content">
+
+          <!-- TAB 1 -->
+          <div class="tab-pane fade show active" id="pane-general" role="tabpanel" aria-labelledby="tab-general">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Tipo de Movimiento</label>
+                {{ form.tipo }}
+                {% for e in form.tipo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Producto</label>
+                {{ form.producto }}
+                {% for e in form.producto.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Proveedor</label>
+                {{ form.proveedor }}
+                {% for e in form.proveedor.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Cantidad</label>
+                {{ form.cantidad }}
+                {% for e in form.cantidad.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2 -->
+          <div class="tab-pane fade" id="pane-detalle" role="tabpanel" aria-labelledby="tab-detalle">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Bodega Origen</label>
+                {{ form.bodega_origen }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Bodega Destino</label>
+                {{ form.bodega_destino }}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Lote</label>
+                {{ form.lote }}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Serie</label>
+                {{ form.serie }}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Fecha de Vencimiento</label>
+                {{ form.fecha_vencimiento }}
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3 -->
+          <div class="tab-pane fade" id="pane-ref" role="tabpanel" aria-labelledby="tab-ref">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Documento de Referencia</label>
+                {{ form.documento_referencia }}
+              </div>
+              <div class="col-12">
+                <label class="form-label">Observación</label>
+                {{ form.observacion }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="d-flex justify-content-end mt-4">
+          <a href="{% url 'inventario:inicio' %}" class="btn btn-secondary me-2">
+            <i class="bi bi-arrow-left"></i> Cancelar
+          </a>
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-save"></i> Guardar Cambioos
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

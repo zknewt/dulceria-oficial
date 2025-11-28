@@ -1,0 +1,29 @@
+[
+  {
+    "model": "inventario.bodega",
+    "pk": 1,
+    "fields": {
+      "codigo": "BOD-001",
+      "nombre": "Bodega Central",
+      "ubicacion": "Planta Principal - Santiago"
+    }
+  },
+  {
+    "model": "inventario.bodega",
+    "pk": 2,
+    "fields": {
+      "codigo": "BOD-002",
+      "nombre": "Bodega Secundaria",
+      "ubicacion": "Sucursal Valparaíso"
+    }
+  },
+  {
+    "model": "inventario.bodega",
+    "pk": 3,
+    "fields": {
+      "codigo": "BOD-003",
+      "nombre": "Bodega de Materias Primas",
+      "ubicacion": "Zona Industrial Quilicura"
+    }
+  }
+]

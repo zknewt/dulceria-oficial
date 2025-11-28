@@ -1,0 +1,42 @@
+{% extends "usuarios/base.html" %}
+{% load static %}
+
+{% block title %}Cuenta bloqueada - Dulcería Lili{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+    <div class="card shadow-lg text-center p-5" style="max-width: 500px; border-radius: 20px;">
+        <!-- Icono grande -->
+        <div class="mb-4">
+            <i class="bi bi-lock-fill text-danger" style="font-size: 4.5rem;"></i>
+        </div>
+
+        <h2 class="fw-bold text-danger mb-3">Cuenta bloqueada temporalmente</h2>
+
+        <p class="text-muted fs-5 mb-4">
+            Por seguridad, tu cuenta ha sido bloqueada tras varios intentos fallidos de inicio de sesión.
+        </p>
+
+        <!-- Mensaje con el tiempo restante (ej: "28 segundos", "3 minutos", "1 hora") -->
+        <div class="alert alert-warning py-4">
+            <strong>
+                {% if request.axes_remaining_time %}
+                    Podrás intentar de nuevo en aproximadamente:<br>
+                    <span class="fs-3 text-dark">{{ request.axes_remaining_time }}</span>
+                {% else %}
+                    Tiempo de bloqueo en curso...<br>
+                    Intenta nuevamente en unos minutos.
+                {% endif %}
+            </strong>
+        </div>
+
+        <p class="text-muted small mt-4">
+            Si crees que esto es un error, contacta al administrador del sistema.
+        </p>
+
+        <a href="{% url 'usuarios:login' %}" class="btn btn-danger btn-lg px-5 mt-3">
+            Volver al inicio de sesión
+        </a>
+    </div>
+</div>
+{% endblock %}

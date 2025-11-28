@@ -1,0 +1,328 @@
+[
+  {
+    "model": "inventario.bodega",
+    "pk": 1,
+    "fields": { "codigo": "BOD-001", "nombre": "Bodega Central", "descripcion": "Bodega principal" }
+  },
+  {
+    "model": "inventario.bodega",
+    "pk": 2,
+    "fields": { "codigo": "BOD-002", "nombre": "Bodega Secundaria", "descripcion": "Bodega secundaria" }
+  },
+  {
+    "model": "inventario.bodega",
+    "pk": 3,
+    "fields": { "codigo": "BOD-003", "nombre": "Bodega de Materias Primas", "descripcion": "MP" }
+  },
+
+  {
+    "model": "proveedores.proveedor",
+    "pk": 1,
+    "fields": {
+      "rut_nif": "76.543.210-5",
+      "razon_social": "Proveedor Andino S.A.",
+      "nombre_fantasia": "AndesPro",
+      "email": "contacto@andespro.cl",
+      "telefono": "223456789",
+      "ciudad": "Santiago",
+      "pais": "Chile",
+      "estado": "ACTIVO"
+    }
+  },
+  {
+    "model": "proveedores.proveedor",
+    "pk": 2,
+    "fields": {
+      "rut_nif": "55.111.222-3",
+      "razon_social": "Electro Patagon SpA",
+      "nombre_fantasia": "E-Patagón",
+      "email": "ventas@epat.cl",
+      "telefono": "226789123",
+      "ciudad": "Puerto Montt",
+      "pais": "Chile",
+      "estado": "ACTIVO"
+    }
+  },
+
+  {
+    "model": "productos.producto",
+    "pk": 1,
+    "fields": {
+      "sku": "CHOCO-001",
+      "nombre": "Chocolate Bitter 70%",
+      "categoria": "Alimentos",
+      "marca": "Dulcería Lili",
+      "uom_compra": "UN",
+      "uom_venta": "UN",
+      "factor_conversion": 1,
+      "impuesto_iva": 19,
+      "stock_minimo": 10,
+      "stock_maximo": 500,
+      "stock_actual": 0
+    }
+  },
+  {
+    "model": "productos.producto",
+    "pk": 2,
+    "fields": {
+      "sku": "GALLE-010",
+      "nombre": "Galleta Vainilla",
+      "categoria": "Alimentos",
+      "marca": "Dulcería Lili",
+      "uom_compra": "UN",
+      "uom_venta": "UN",
+      "factor_conversion": 1,
+      "impuesto_iva": 19,
+      "stock_minimo": 20,
+      "stock_maximo": 800,
+      "stock_actual": 0
+    }
+  },
+  {
+    "model": "productos.producto",
+    "pk": 3,
+    "fields": {
+      "sku": "DDL-500",
+      "nombre": "Dulce de Leche 500g",
+      "categoria": "Alimentos",
+      "marca": "Dulcería Lili",
+      "uom_compra": "UN",
+      "uom_venta": "UN",
+      "factor_conversion": 1,
+      "impuesto_iva": 19,
+      "stock_minimo": 15,
+      "stock_maximo": 600,
+      "stock_actual": 0
+    }
+  },
+
+
+  {
+    "model": "inventario.movimientoinventario",
+    "pk": 1,
+    "fields": {
+      "fecha": "2025-10-20T10:15:00Z",
+      "tipo": "INGRESO",
+      "producto": 1,
+      "proveedor": 1,
+      "bodega_origen": null,
+      "bodega_destino": 1,
+      "cantidad": "120.00",
+      "lote": null,
+      "serie": "",
+      "fecha_vencimiento": "2026-10-01",
+      "documento_referencia": "OC-1001",
+      "observacion": "Ingreso inicial por compra",
+      "usuario": null
+    }
+  },
+  {
+    "model": "inventario.movimientoinventario",
+    "pk": 2,
+    "fields": {
+      "fecha": "2025-10-21T12:30:00Z",
+      "tipo": "INGRESO",
+      "producto": 2,
+      "proveedor": 2,
+      "bodega_origen": null,
+      "bodega_destino": 1,
+      "cantidad": "300.00",
+      "lote": null,
+      "serie": "",
+      "fecha_vencimiento": "2026-09-30",
+      "documento_referencia": "OC-1002",
+      "observacion": "Compra para stock",
+      "usuario": null
+    }
+  },
+  {
+    "model": "inventario.movimientoinventario",
+    "pk": 3,
+    "fields": {
+      "fecha": "2025-10-22T09:00:00Z",
+      "tipo": "SALIDA",
+      "producto": 2,
+      "proveedor": null,
+      "bodega_origen": 1,
+      "bodega_destino": null,
+      "cantidad": "50.00",
+      "lote": null,
+      "serie": "",
+      "fecha_vencimiento": null,
+      "documento_referencia": "VENTA-2301",
+      "observacion": "Venta local",
+      "usuario": null
+    }
+  },
+  {
+    "model": "inventario.movimientoinventario",
+    "pk": 4,
+    "fields": {
+      "fecha": "2025-10-22T10:30:00Z",
+      "tipo": "TRANSFERENCIA",
+      "producto": 1,
+      "proveedor": null,
+      "bodega_origen": 1,
+      "bodega_destino": 2,
+      "cantidad": "40.00",
+      "lote": null,
+      "serie": "",
+      "fecha_vencimiento": null,
+      "documento_referencia": "TR-0007",
+      "observacion": "Abastecer Bodega Secundaria",
+      "usuario": null
+    }
+  },
+  {
+    "model": "inventario.movimientoinventario",
+    "pk": 5,
+    "fields": {
+      "fecha": "2025-10-23T08:15:00Z",
+      "tipo": "INGRESO",
+      "producto": 3,
+      "proveedor": 1,
+      "bodega_origen": null,
+      "bodega_destino": 3,
+      "cantidad": "200.00",
+      "lote": null,
+      "serie": "",
+      "fecha_vencimiento": "2026-06-30",
+      "documento_referencia": "OC-1003",
+      "observacion": "Ingreso MP a bodega de materias primas",
+      "usuario": null
+    }
+  },
+  {
+    "model": "inventario.movimientoinventario",
+    "pk": 6,
+    "fields": {
+      "fecha": "2025-10-24T16:40:00Z",
+      "tipo": "DEVOLUCION",
+      "producto": 2,
+      "proveedor": null,
+      "bodega_origen": 2,
+      "bodega_destino": 1,
+      "cantidad": "10.00",
+      "lote": null,
+      "serie": "",
+      "fecha_vencimiento": null,
+      "documento_referencia": "DEV-021",
+      "observacion": "Devolución interna de productos",
+      "usuario": null
+    }
+  },
+  {
+    "model": "inventario.movimientoinventario",
+    "pk": 7,
+    "fields": {
+      "fecha": "2025-10-25T11:00:00Z",
+      "tipo": "AJUSTE",
+      "producto": 1,
+      "proveedor": null,
+      "bodega_origen": 1,
+      "bodega_destino": null,
+      "cantidad": "5.00",
+      "lote": null,
+      "serie": "",
+      "fecha_vencimiento": null,
+      "documento_referencia": "AJ-0003",
+      "observacion": "Ajuste por merma",
+      "usuario": null
+    }
+  },
+  {
+    "model": "inventario.movimientoinventario",
+    "pk": 8,
+    "fields": {
+      "fecha": "2025-11-01T13:15:00Z",
+      "tipo": "INGRESO",
+      "producto": 1,
+      "proveedor": 2,
+      "bodega_origen": null,
+      "bodega_destino": 1,
+      "cantidad": "80.00",
+      "lote": null,
+      "serie": "",
+      "fecha_vencimiento": "2026-10-15",
+      "documento_referencia": "OC-1010",
+      "observacion": "Reposición por campaña",
+      "usuario": null
+    }
+  },
+  {
+    "model": "inventario.movimientoinventario",
+    "pk": 9,
+    "fields": {
+      "fecha": "2025-11-02T09:20:00Z",
+      "tipo": "SALIDA",
+      "producto": 3,
+      "proveedor": null,
+      "bodega_origen": 3,
+      "bodega_destino": null,
+      "cantidad": "25.00",
+      "lote": null,
+      "serie": "",
+      "fecha_vencimiento": null,
+      "documento_referencia": "PROD-055",
+      "observacion": "Consumo de MP en producción",
+      "usuario": null
+    }
+  },
+  {
+    "model": "inventario.movimientoinventario",
+    "pk": 10,
+    "fields": {
+      "fecha": "2025-11-03T15:45:00Z",
+      "tipo": "TRANSFERENCIA",
+      "producto": 2,
+      "proveedor": null,
+      "bodega_origen": 1,
+      "bodega_destino": 3,
+      "cantidad": "60.00",
+      "lote": null,
+      "serie": "",
+      "fecha_vencimiento": null,
+      "documento_referencia": "TR-0011",
+      "observacion": "Apoyo a producción",
+      "usuario": null
+    }
+  },
+  {
+    "model": "inventario.movimientoinventario",
+    "pk": 11,
+    "fields": {
+      "fecha": "2025-11-05T10:10:00Z",
+      "tipo": "DEVOLUCION",
+      "producto": 1,
+      "proveedor": null,
+      "bodega_origen": 2,
+      "bodega_destino": 1,
+      "cantidad": "8.00",
+      "lote": null,
+      "serie": "",
+      "fecha_vencimiento": null,
+      "documento_referencia": "DEV-037",
+      "observacion": "Devolución de excedente",
+      "usuario": null
+    }
+  },
+  {
+    "model": "inventario.movimientoinventario",
+    "pk": 12,
+    "fields": {
+      "fecha": "2025-11-06T18:30:00Z",
+      "tipo": "AJUSTE",
+      "producto": 3,
+      "proveedor": null,
+      "bodega_origen": 1,
+      "bodega_destino": null,
+      "cantidad": "-3.00",
+      "lote": null,
+      "serie": "",
+      "fecha_vencimiento": null,
+      "documento_referencia": "AJ-0010",
+      "observacion": "Ajuste negativo por vencimiento",
+      "usuario": null
+    }
+  }
+]

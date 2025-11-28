@@ -1,0 +1,366 @@
+{% extends "usuarios/base.html" %}
+{% load static %}
+{% load tz %}
+
+{% block title %}Movimientos de Inventario{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  
+  <!-- Título -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold text-primary">
+      <i class="bi bi-arrow-left-right me-1"></i> Movimientos de Inventario
+    </h2>
+  </div>
+
+
+  <!-- ==== FILTROS ==== -->
+  <form method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-md-4">
+      <label class="form-label small fw-semibold">Buscar (SKU o Proveedor)</label>
+      <input type="text" name="buscar" value="{{ f_buscar }}" class="form-control" placeholder="Ej: SKU3, Lilis, etc.">
+    </div>
+    
+
+    <div class="col-md-2">
+      <label class="form-label small fw-semibold">Tipo</label>
+      <select name="tipo" class="form-select" onchange="this.form.submit()">
+        <option value="">Todos</option>
+        {% for value,label in form.fields.tipo.choices %}
+          {% if value %}
+            <option value="{{ value }}" {% if f_tipo == value %}selected{% endif %}>{{ label }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label small fw-semibold">Bodega (origen/destino)</label>
+      <input type="text" name="bodega" value="{{ f_bodega }}" class="form-control" placeholder="BOD-001, Central, etc.">
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label small fw-semibold">Por página</label>
+      <select name="pp" class="form-select" onchange="this.form.submit()">
+        {% with size=page_obj.paginator.per_page %}
+          <option value="5"  {% if per_page == 5 %}selected{% endif %}>5</option>
+          <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+          <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+        {% endwith %}
+      </select>
+    </div>
+
+    <div class="col-md-2 d-grid">
+      <a class="btn btn-success"
+        href="?{% if f_tipo %}tipo={{ f_tipo }}&{% endif %}
+              {% if f_buscar %}buscar={{ f_buscar }}&{% endif %}
+              {% if f_bodega %}bodega={{ f_bodega }}&{% endif %}
+              pp={{ per_page }}&export=xlsx">
+        <i class="bi bi-file-earmark-excel"></i> Exportar
+      </a>
+    </div>
+
+    <div class="col-md-1 d-grid">
+      <button class="btn btn-primary"><i class="bi bi-filter"></i> Filtrar</button>
+    </div>
+    <div class="col-md-2 d-grid">
+      <a href="?clear=1" class="btn btn-outline-secondary">
+        <i class="bi bi-x-circle"></i> Limpiar filtros
+      </a>
+    </div>
+  </form>
+
+  <!-- ==== TABLA ==== -->
+  <div class="card shadow-sm mb-5">
+    <div class="card-body">
+      {% if movimientos %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-primary">
+            <tr>
+              <th>Fecha</th>
+              <th>Tipo</th>
+              <th>SKU</th>
+              <th>Proveedor</th>
+              <th>Bodega Origen</th>
+              <th>Bodega Destino</th>
+              <th class="text-end">Cantidad</th>
+              <th>Lote</th>
+              <th>Serie</th>
+              <th>Fecha de vencimineto</th>
+              <th>Doc Referencia</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for mov in movimientos %}
+            <tr>
+              <td>{{ mov.fecha|date:"d/m/Y H:i" }}</td>
+              <td>{{ mov.tipo }}</td>
+              <td>{{ mov.producto.sku }}</td>
+              <th>{{ mov.proveedor|default:"—" }}</th>
+              <td>{{ mov.bodega_origen|default:"—" }}</td>
+              <td>{{ mov.bodega_destino|default:"—" }}</td>
+              <td class="text-end">{{ mov.cantidad }}</td>
+              <th> {{ mov.lote|default:"—" }} </th>
+              <th> {{ mov.serie|default:"—" }} </th>
+              <td> {{ mov.fecha_vencimiento|default:"—" }} </td>
+              <th> {{  mov.doc_referencia|default:"—"}} </th>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm" role="group">
+                  <a href="{% url 'inventario:detalle_movimiento' mov.pk %}" class="btn btn-primary" title="Ver detalle">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                  <a href="{% url 'inventario:editar_movimiento' mov.pk %}" class="btn btn-warning text-white" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <a href="{% url 'inventario:lista_bodegas' %}" class="btn btn-secondary" title="Ver bodegas">
+                    <i class="bi bi-buildings"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ==== PAGINADOR ==== -->
+      {% if page_obj.has_other_pages %}
+      <nav aria-label="Paginación movimientos" class="mt-3">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ page_obj.previous_page_number }}&tipo={{ f_tipo }}&producto={{ f_producto }}&bodega={{ f_bodega }}&pp={{ page_obj.paginator.per_page }}">«</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">«</span></li>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+              <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ num }}&tipo={{ f_tipo }}&producto={{ f_producto }}&bodega={{ f_bodega }}&pp={{ page_obj.paginator.per_page }}">{{ num }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ page_obj.next_page_number }}&tipo={{ f_tipo }}&producto={{ f_producto }}&bodega={{ f_bodega }}&pp={{ page_obj.paginator.per_page }}">»</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">»</span></li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+
+      {% else %}
+        <div class="alert alert-info mb-0">No hay movimientos registrados.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ==== FORMULARIO: REGISTRAR MOVIMIENTO (MISMA PÁGINA) ==== -->
+  <div class="card shadow-sm">
+    <div class="card-header text-white" style="background-color:#c62828;">
+      <div class="d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">
+          <i class="bi bi-plus-circle me-1"></i> Registrar Movimiento
+        </h4>
+        <img src="{% static 'img/logo.png' %}" alt="Logo Dulcería Lili" width="40" height="40">
+      </div>
+    </div>
+
+    <div class="card-body bg-light">
+
+
+
+      <!-- Pestañas -->
+      <ul class="nav nav-tabs mb-3" id="movTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="tab-datos" data-bs-toggle="tab" data-bs-target="#pane-datos" type="button" role="tab">
+            1. Datos del movimiento
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab-control" data-bs-toggle="tab" data-bs-target="#pane-control" type="button" role="tab">
+            2. Control avanzado
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab-ref" data-bs-toggle="tab" data-bs-target="#pane-ref" type="button" role="tab">
+            3. Referencias/Observaciones
+          </button>
+        </li>
+      </ul>
+
+      <form method="post" action="{% url 'inventario:inicio' %}" novalidate>
+        {% csrf_token %}
+
+        <div class="tab-content">
+
+          <!-- 1) Datos -->
+          <div class="tab-pane fade show active" id="pane-datos" role="tabpanel">
+            <div class="row g-3">
+              <div class="col-md-6"> Fecha de registro
+                {{ form.fecha_mostrada }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Tipo de Movimiento</label>
+                {{ form.tipo }}
+                {% for e in form.tipo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Producto</label>
+                {{ form.producto }}
+                {% for e in form.producto.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Proveedor</label>
+                {{ form.proveedor }}
+                {% for e in form.proveedor.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Cantidad</label>
+                {{ form.cantidad }}
+                {% for e in form.cantidad.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Bodega</label>
+                {{ form.bodega_origen }}
+                {% for e in form.bodega_origen.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Bodega Destino</label>
+                {{ form.bodega_destino }}
+                {% for e in form.bodega_destino.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <!-- 2) Control avanzado -->
+          <div class="tab-pane fade" id="pane-control" role="tabpanel">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Lote</label>
+                {{ form.lote }}
+                {% for e in form.lote.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Serie</label>
+                {{ form.serie }}
+                {% for e in form.serie.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Fecha de Vencimiento</label>
+                {{ form.fecha_vencimiento }}
+                {% for e in form.fecha_vencimiento.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <!-- 3) Referencias / Observaciones -->
+          <div class="tab-pane fade" id="pane-ref" role="tabpanel">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Documento Referencia</label>
+                {{ form.documento_referencia }}
+                {% for e in form.documento_referencia.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-12">
+                <label class="form-label">Observación</label>
+                {{ form.observacion }}
+                {% for e in form.observacion.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Acciones -->
+        <div class="d-flex justify-content-end mt-4">
+          <a href="{% url 'inventario:inicio' %}" class="btn btn-secondary me-2">
+            <i class="bi bi-arrow-left"></i> Cancelar
+          </a>
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-save"></i> Guardar Movimiento
+          </button>
+        </div>
+      </form>
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const proveedorSelect = document.getElementById("select-proveedor");
+            const productoSelect  = document.getElementById("select-producto");
+            const loteSelect      = document.getElementById("select-lote");
+        
+            // ------------------ PRODUCTOS POR PROVEEDOR (ya lo tenías) ------------------
+            if (proveedorSelect && productoSelect) {
+                proveedorSelect.addEventListener("change", function () {
+                    const proveedorId = this.value;
+        
+                    productoSelect.innerHTML = `<option value="">---------</option>`;
+                    loteSelect.innerHTML     = `<option value="">---------</option>`;
+        
+                    if (!proveedorId) {
+                        return;
+                    }
+        
+                    fetch(`/inventario/productos-por-proveedor/${proveedorId}/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.productos.forEach(prod => {
+                                const option = document.createElement("option");
+                                option.value = prod.id;
+                                option.textContent = `${prod.sku} - ${prod.nombre}`;
+                                productoSelect.appendChild(option);
+                            });
+                        });
+                });
+            }
+        
+            // ------------------ LOTES POR PRODUCTO ------------------
+            if (productoSelect && loteSelect) {
+                productoSelect.addEventListener("change", function () {
+                    const productoId = this.value;
+        
+                    loteSelect.innerHTML = `<option value="">---------</option>`;
+        
+                    if (!productoId) {
+                        return;
+                    }
+        
+                    fetch(`/inventario/lotes-por-producto/${productoId}/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.lotes.forEach(lote => {
+                                const option = document.createElement("option");
+                                option.value = lote.id;
+                                option.textContent = `${lote.codigo} - disponible: ${lote.disponible}`;
+                                loteSelect.appendChild(option);
+                            });
+                        });
+                });
+            }
+        });
+        </script>
+        
+        
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,302 @@
+{% extends 'usuarios/base.html' %}
+{% load static %}
+
+{% block title %}Editar Proveedor – {{ object.razon_social }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <!-- Encabezado -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold text-primary">
+      <i class="bi bi-pencil-square"></i> Editar Proveedor
+    </h2>
+
+    <a href="{% url 'proveedores:lista' %}" class="btn btn-secondary">
+      <i class="bi bi-arrow-left"></i> Volver
+    </a>
+  </div>
+
+  <!-- CARD PRINCIPAL -->
+  <div class="card shadow-sm">
+    <div class="card-header text-white" style="background-color:#c62828;">
+      <div class="d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">
+          <i class="bi bi-building"></i> {{ object.razon_social }}
+        </h4>
+        <img src="{% static 'img/logo.png' %}" width="40" height="40" alt="Logo Dulcería Lili">
+      </div>
+    </div>
+
+    <div class="card-body bg-light">
+
+      {% if form.errors %}
+      <div class="alert alert-danger mb-3">
+        <strong>Corrige los siguientes campos:</strong>
+        <ul class="mb-0">
+          {% for field in form %}
+            {% for e in field.errors %}
+              <li><strong>{{ field.label }}:</strong> {{ e }}</li>
+            {% endfor %}
+          {% endfor %}
+          {% for e in form.non_field_errors %}
+            <li>{{ e }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <!-- PESTAÑAS -->
+      <ul class="nav nav-tabs mb-3" id="provTabs">
+        <li class="nav-item">
+          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#pane-ident">
+            1. Identificación & Contacto
+          </button>
+        </li>
+
+        <li class="nav-item">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pane-comercial">
+            2. Dirección & Comercial
+          </button>
+        </li>
+
+        <li class="nav-item">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pane-relacion">
+            3. Relación con Productos
+          </button>
+        </li>
+      </ul>
+
+      <!-- FORMULARIO -->
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="tab-content">
+
+          <!-- TAB 1 -->
+          <div class="tab-pane fade show active" id="pane-ident">
+            <div class="row g-3">
+
+              <div class="col-md-6">
+                <label class="form-label">RUT/NIF *</label>
+                {{ form.rut_nif }}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Razón Social *</label>
+                {{ form.razon_social }}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Nombre Fantasía</label>
+                {{ form.nombre_fantasia }}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Email *</label>
+                {{ form.email }}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Teléfono</label>
+                {{ form.telefono }}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Sitio web</label>
+                {{ form.sitio_web }}
+              </div>
+
+            </div>
+          </div>
+
+          <!-- TAB 2 -->
+          <div class="tab-pane fade" id="pane-comercial">
+            <div class="row g-3">
+
+              <div class="col-md-6">
+                <label class="form-label">Dirección</label>
+                {{ form.direccion }}
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label">Ciudad</label>
+                {{ form.ciudad }}
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label">País</label>
+                {{ form.pais }}
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Condiciones de Pago *</label>
+                {{ form.condiciones_pago }}
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Moneda *</label>
+                {{ form.moneda }}
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Estado</label>
+                {{ form.estado }}
+              </div>
+
+            </div>
+          </div>
+
+          <!-- TAB 3 — FORMSET COMPLETO -->
+          <div class="tab-pane fade" id="pane-relacion">
+
+            <h5 class="fw-bold text-secondary">Relación con Productos</h5>
+            <div class="alert alert-info">
+              Agrega nuevos productos o edita los existentes.
+            </div>
+
+            {{ pp_formset.management_form }}
+
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead class="table-primary">
+                  <tr>
+                    <th style="width: 30%;">Producto</th>
+                    <th>Costo</th>
+                    <th>Lead Time</th>
+                    <th>Min Lote</th>
+                    <th>Descuento %</th>
+                    <th class="text-center">Preferente</th>
+                    <th class="text-center">Eliminar</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {% for f in pp_formset %}
+                  <tr>
+                    {{ f.id }}
+                    <td>
+                      <select name="{{ f.producto.html_name }}" class="form-select producto-select">
+                        {% for prod in f.fields.producto.queryset %}
+                          <option value="{{ prod.id }}" 
+                                  data-costo="{{ prod.costo_estandar }}"
+                                  {% if f.instance.producto and f.instance.producto.id == prod.id %}selected{% endif %}>
+                            {{ prod.sku }} - {{ prod.nombre }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                      {% for error in f.producto.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                      {% endfor %}
+                    </td>
+                    <td>
+                      <input type="number" 
+                             name="{{ f.costo.html_name }}" 
+                             class="form-control costo-input" 
+                             step="0.01"
+                             value="{{ f.initial.costo|default_if_none:'' }}">
+                    </td>
+                    <td>{{ f.lead_time_dias }} {%  for error in f.lead_time_dias.errors %} <div class="text-danger small">{{ error }}</div>{% endfor %}</td>
+                    <td>{{ f.min_lote }} {%  for error in f.min_lote.errors %} <div class="text-danger small">{{ error }}</div>{% endfor %}</td>
+                    <td>{{ f.descuento_pct }} {% for error in f.descuento_pct.errors %} <div class="text-danger small">{{ error }}</div>{% endfor %}</td>
+                    <td class="text-center">{{ f.preferente }}</td>
+                    <td class="text-center">
+                      {% if f.instance.pk %}
+                        <button type="button" class="btn btn-sm btn-danger btn-delete-row">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                        {{ f.DELETE }}
+                      {% endif %}
+                    </td>
+                  </tr>
+
+                  {% if f.non_field_errors %}
+                  <tr>
+                    <td colspan="7" class="text-danger small">{{ f.non_field_errors }}</td>
+                  </tr>
+                  {% endif %}
+
+                  {% endfor %}
+                </tbody>
+
+              </table>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- BOTONES -->
+        <div class="d-flex justify-content-end mt-4">
+          <a href="{% url 'proveedores:lista' %}" class="btn btn-secondary me-2">
+            <i class="bi bi-arrow-left"></i> Cancelar
+          </a>
+
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-save"></i> Guardar cambios
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Activar TAB donde haya errores -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const error = document.querySelector(".text-danger.small");
+  if (!error) return;
+  const pane = error.closest(".tab-pane");
+  if (!pane) return;
+  const tab = document.querySelector(`[data-bs-target="#${pane.id}"]`);
+  if (tab) new bootstrap.Tab(tab).show();
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".btn-delete-row").forEach((btn) => {
+        btn.addEventListener("click", function () {
+
+            Swal.fire({
+                title: "¿Eliminar producto asociado?",
+                text: "Esta acción no se puede deshacer.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    // Buscamos el checkbox DELETE dentro de la misma fila
+                    const row = btn.closest("tr");
+                    const checkbox = row.querySelector("input[type='checkbox']");
+
+                    checkbox.checked = true; // MARCAR EL DELETE
+
+                    // Enviar formulario
+                    btn.closest("form").submit();
+                }
+            });
+        });
+    });
+});
+document.addEventListener("change", function (e) {
+    if (e.target.classList.contains("producto-select")) {
+
+        const fila = e.target.closest("tr");
+        const costoInput = fila.querySelector(".costo-input");
+
+        const option = e.target.options[e.target.selectedIndex];
+        const costo = option.getAttribute("data-costo");
+
+        if (costo) {
+            costoInput.value = parseFloat(costo).toFixed(2);
+        }
+    }
+});
+
+</script>
+
+{% endblock %}

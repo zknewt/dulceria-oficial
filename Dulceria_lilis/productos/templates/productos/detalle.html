@@ -1,0 +1,56 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block title %}Detalle del Producto{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: #c62828;">
+            <h4 class="mb-0"><i class="bi bi-box"></i> Detalle del Producto</h4>
+            <img src="{% static 'img/logo.png' %}" alt="Logo Dulcería Lili" width="50" height="50">
+        </div>
+
+        <div class="card-body bg-light">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p><strong>SKU:</strong> {{ object.sku }}</p>
+                    <p><strong>Nombre:</strong> {{ object.nombre }}</p>
+                    <p><strong>Categoría:</strong> {{ object.categoria }}</p>
+                    <p><strong>Marca:</strong> {{ object.marca }}</p>
+                    <p><strong>Modelo:</strong> {{ object.modelo }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Precio Venta:</strong> ${{ object.precio_venta }}</p>
+                    <p><strong>IVA:</strong> {{ object.impuesto_iva }}%</p>
+                    <p><strong>Stock Actual:</strong> {{ object.stock_actual }}</p>
+                    <p><strong>Stock Mínimo:</strong> {{ object.stock_minimo }}</p>
+                    <p><strong>Stock Máximo:</strong> {{ object.stock_maximo }}</p>
+                </div>
+            </div>
+
+            {% if object.descripcion %}
+            <div class="mb-3">
+                <p><strong>Descripción:</strong></p>
+                <p>{{ object.descripcion }}</p>
+            </div>
+            {% endif %}
+
+            {% if alerta_bajo_stock %}
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle"></i> El stock está por debajo del mínimo permitido.
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="card-footer text-center">
+            <a href="{% url 'productos:editar' object.pk %}" class="btn btn-warning">
+                <i class="bi bi-pencil-square"></i> Editar
+            </a>
+            <a href="{% url 'productos:lista' %}" class="btn btn-secondary ms-2">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+[
+  {
+    "model": "inventario.lote",
+    "pk": 1,
+    "fields": {
+      "codigo": "LOT-0001",
+      "producto": 1,
+      "fecha_vencimiento": "2026-06-30"
+    }
+  },
+  {
+    "model": "inventario.lote",
+    "pk": 2,
+    "fields": {
+      "codigo": "LOT-0002",
+      "producto": 1,
+      "fecha_vencimiento": "2026-12-31"
+    }
+  }
+]

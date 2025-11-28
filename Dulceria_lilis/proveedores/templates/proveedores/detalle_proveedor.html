@@ -1,0 +1,102 @@
+{% extends "usuarios/base.html" %}
+{% load static %}
+
+{% block title %}Detalle de Proveedor{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <!-- Encabezado -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header text-white" style="background-color:#c62828;">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          PROVEEDOR {{ object.razon_social|default:"(sin razón social)" }}
+        </h5>
+        <img src="{% static 'img/logo.png' %}" alt="Logo Dulcería Lili" width="40" height="40">
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <p><strong>RUT/NIF:</strong> {{ object.rut_nif|default:"—" }}</p>
+          <p><strong>Nombre Fantasía:</strong> {{ object.nombre_fantasia|default:"—" }}</p>
+          <p><strong>Email:</strong> {{ object.email|default:"—" }}</p>
+          <p><strong>Teléfono:</strong> {{ object.telefono|default:"—" }}</p>
+          <p><strong>Dirección:</strong> {{ object.direccion|default:"—" }}</p>
+          <p><strong>Ciudad:</strong> {{ object.ciudad|default:"—" }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>País:</strong> {{ object.pais|default:"—" }}</p>
+          <p><strong>Condiciones de Pago:</strong> {{ object.condiciones_pago|default:"—" }}</p>
+          <p><strong>Moneda:</strong> {{ object.moneda|default:"—" }}</p>
+          <p>
+            <strong>Estado:</strong>
+            {% if object.estado == "ACTIVO" %}
+              <span class="badge bg-success">ACTIVO</span>
+            {% elif object.estado == "BLOQUEADO" %}
+              <span class="badge bg-danger">BLOQUEADO</span>
+            {% else %}
+              <span class="badge bg-secondary">{{ object.estado|default:"—" }}</span>
+            {% endif %}
+          </p>
+          <p><strong>Observaciones:</strong> {{ object.observaciones|default:"Sin observaciones" }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Productos asociados -->
+  <h5 class="mb-3">
+    <i class="bi bi-box-seam"></i> Productos Asociados
+  </h5>
+
+  {% if productos_asociados %}
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Producto</th>
+                <th class="text-end">Costo</th>
+                <th class="text-center">Preferente</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for pp in productos_asociados %}
+                <tr>
+                  <td>{{ pp.producto }}</td>
+                  <td class="text-end">
+                    {{ pp.costo|default:"—" }}
+                  </td>
+                  <td class="text-center">
+                    {% if pp.preferente %}<span class="badge bg-primary">Sí</span>{% else %}No{% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="alert alert-warning">
+      <i class="bi bi-exclamation-triangle"></i>
+      No hay productos asociados a este proveedor.
+    </div>
+  {% endif %}
+
+  <!-- Acciones -->
+  <div class="text-center mt-4">
+    <a href="{% url 'proveedores:editar' object.id %}" class="btn btn-warning me-2">
+      <i class="bi bi-pencil-square"></i> Editar
+    </a>
+    <a href="{% url 'proveedores:lista' %}" class="btn btn-secondary">
+      <i class="bi bi-arrow-left"></i> Volver a la lista
+    </a>
+  </div>
+
+</div>
+{% endblock %}

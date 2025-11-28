@@ -1,0 +1,202 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block title %}
+  {% if view.object %}Editar Producto{% else %}Nuevo Producto{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <div class="card shadow-sm">
+    <div class="card-header text-white" style="background-color:#c62828;">
+      <div class="d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">
+          <i class="bi bi-box-seam"></i>
+          {% if view.object %} Editar Producto {% else %} Nuevo Producto {% endif %}
+        </h4>
+        <img src="{% static 'img/logo.png' %}" alt="Logo Dulcería Lili" width="40" height="40">
+      </div>
+    </div>
+
+    <div class="card-body bg-light">
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger mb-3">
+          {% for e in form.non_field_errors %}{{ e }}<br>{% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Pestañas -->
+      <ul class="nav nav-tabs mb-3" id="prodTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="tab-id-precio" data-bs-toggle="tab" data-bs-target="#pane-id-precio" type="button" role="tab">
+            1. Identificación y precios
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab-stock" data-bs-toggle="tab" data-bs-target="#pane-stock" type="button" role="tab">
+            2. Stock y control
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab-rel" data-bs-toggle="tab" data-bs-target="#pane-rel" type="button" role="tab">
+            3. Relaciones y derivados
+          </button>
+        </li>
+      </ul>
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="tab-content">
+
+          <!-- 1) Identificación y precios -->
+          <div class="tab-pane fade show active" id="pane-id-precio" role="tabpanel" aria-labelledby="tab-id-precio">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label">SKU (único)</label>
+                {{ form.sku }} {% for e in form.sku.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">EAN/UPC</label>
+                {{ form.ean_upc }} {% for e in form.ean_upc.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Nombre</label>
+                {{ form.nombre }} {% for e in form.nombre.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">Descripción</label>
+                {{ form.descripcion }} {% for e in form.descripcion.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Categoría</label>
+                {{ form.categoria }} {% for e in form.categoria.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Marca</label>
+                {{ form.marca }} {% for e in form.marca.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Modelo</label>
+                {{ form.modelo }} {% for e in form.modelo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <hr class="mt-2">
+
+              <div class="col-md-4">
+                <label class="form-label">UOM compra</label>
+                {{ form.uom_compra }} {% for e in form.uom_compra.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">UOM venta</label>
+                {{ form.uom_venta }} {% for e in form.uom_venta.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Factor conversión</label>
+                {{ form.factor_conversion }} {% for e in form.factor_conversion.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Costo estándar</label>
+                {{ form.costo_estandar }} {% for e in form.costo_estandar.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Costo promedio</label>
+                {{ form.costo_promedio }} {% for e in form.costo_promedio.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Precio venta</label>
+                {{ form.precio_venta }} {% for e in form.precio_venta.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Impuesto IVA (%)</label>
+                {{ form.impuesto_iva }} {% for e in form.impuesto_iva.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <!-- 2) Stock y control -->
+          <div class="tab-pane fade" id="pane-stock" role="tabpanel" aria-labelledby="tab-stock">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label">Stock mínimo</label>
+                {{ form.stock_minimo }} {% for e in form.stock_minimo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Stock máximo</label>
+                {{ form.stock_maximo }} {% for e in form.stock_maximo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Punto de reorden</label>
+                {{ form.punto_reorden }} {% for e in form.punto_reorden.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-check mt-4">
+                  {{ form.perishable }} <label class="form-check-label ms-1">Perecible</label>
+                </div>
+                {% for e in form.perishable.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-4">
+                <div class="form-check mt-4">
+                  {{ form.control_por_lote }} <label class="form-check-label ms-1">Control por lote</label>
+                </div>
+                {% for e in form.control_por_lote.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-4">
+                <div class="form-check mt-4">
+                  {{ form.control_por_serie }} <label class="form-check-label ms-1">Control por serie</label>
+                </div>
+                {% for e in form.control_por_serie.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <!-- 3) Relaciones y derivados -->
+          <div class="tab-pane fade" id="pane-rel" role="tabpanel" aria-labelledby="tab-rel">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Imagen URL</label>
+                {{ form.imagen_url }} {% for e in form.imagen_url.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Ficha técnica URL</label>
+                {{ form.ficha_tecnica_url }} {% for e in form.ficha_tecnica_url.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Stock actual</label>
+                {{ form.stock_actual }} {% for e in form.stock_actual.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Alerta Bajo Stock </label>
+                <input type="text" class="form-control" value="{% if form.instance.alerta_bajo_stock %}Sí{% else %}No{% endif %}" readonly>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Alerta Por Vencer</label>              </div>
+                <input class=" form-control" value="{% if form.instance.alerta_por_vencer %}Sí{% else %}No{% endif %}" readonly>
+              </div>
+          </div>
+
+        </div> <!-- /tab-content -->
+
+        <div class="d-flex justify-content-end mt-4">
+          <a href="{% url 'productos:lista' %}" class="btn btn-secondary me-2">
+            <i class="bi bi-arrow-left"></i> Cancelar
+          </a>
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-save"></i> Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
