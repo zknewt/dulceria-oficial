@@ -60,7 +60,24 @@ class UsuarioForm(forms.ModelForm):
         ('BLOQUEADO', 'BLOQUEADO'),
         ('INACTIVO', 'INACTIVO'),
     ]
-    
+    # Aquí es donde defines los campos del formulario
+    username = forms.CharField(
+        max_length=20,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        error_messages={
+            'required': 'Por favor, ingresa un nombre de usuario.',
+            'max_length': 'El nombre de usuario no puede exceder los 20 caracteres.'
+        }
+    )
+
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'class': 'form-control'}),
+        error_messages={
+            'required': 'Por favor, ingresa una dirección de correo electrónica.',
+            'invalid': 'El formato del correo electrónico no es válido.'
+        }
+    )
+
     nombres = models.CharField("Nombres", max_length=150, blank=True, null=True)
     apellidos = models.CharField("Apellidos", max_length=150, blank=True, null=True)
     email = models.EmailField("Email", unique=True, blank=False, null=True)

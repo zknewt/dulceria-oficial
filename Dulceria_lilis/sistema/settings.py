@@ -124,10 +124,10 @@ if ENGINE == "mysql":
             "NAME": os.getenv("DB_NAME"),
             "USER": os.getenv("DB_USER"),
             "PASSWORD": os.getenv("DB_PASSWORD"),
-            "HOST": os.getenv("DB_HOST", "localhost" ), #"ec2-52-203-115-90.compute-1.amazonaws.com"
+            "HOST": os.getenv("DB_HOST", "ec2-52-203-115-90.compute-1.amazonaws.com"),
             "PORT": os.getenv("DB_PORT", "3306"),
-            #"OPTIONS": {"charset": "utf8mb4",
-            #            "ssl": {"ca": "/etc/ssl/certs/aws-rds/rds-combined-ca-bundle.pem"}},
+            "OPTIONS": {"charset": "utf8mb4",
+                        "ssl": {"ca": "/etc/ssl/certs/aws-rds/rds-combined-ca-bundle.pem"}},
         }
     }
 else:  # SQLite por defecto

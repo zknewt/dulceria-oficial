@@ -180,69 +180,57 @@ def resetear_clave(request, pk):
     return redirect('usuarios:lista')
 
 
-# ➕ CREAR USUARIO
 @login_required
 @permission_required('usuarios.add_usuario', raise_exception=False)
 @require_POST
 def usuario_create(request):
-    if request.method == 'POST':
-        form = UsuarioForm(request.POST)
+    form = UsuarioForm(request.POST)
 
-        if form.is_valid():
-            usuario = form.save(commit=False)
+    if form.is_valid():
+        usuario = form.save(commit=False)
 
-            # Generar clave temporal robusta
-            clave_temporal = generar_clave_temporal()
-            usuario.set_password(clave_temporal)
-            usuario.debe_cambiar_clave = True
-            usuario.save()
+        # Generar clave temporal robusta
+        clave_temporal = generar_clave_temporal()
+        usuario.set_password(clave_temporal)
+        usuario.debe_cambiar_clave = True
+        usuario.save()
 
-            # Enviar correo
-            subject = "Dulcería Lili - Bienvenido/a"
-            login_url = request.build_absolute_uri(reverse('usuarios:login'))
-            message = f"""
-            Hola {usuario.nombres},
+        # Enviar correo de bienvenida
+        subject = "Dulcería Lili - Bienvenido/a"
+        login_url = request.build_absolute_uri(reverse('usuarios:login'))
+        message = f"""
+        Hola {usuario.nombres},
 
-            Tu cuenta ha sido creada exitosamente.
+        Tu cuenta ha sido creada exitosamente.
 
-            Usuario: {usuario.username}
-            Clave temporal: {clave_temporal}
+        Usuario: {usuario.username}
+        Clave temporal: {clave_temporal}
 
-            Debes cambiar tu clave en el primer inicio de sesión.
-            Ingresa aquí: {login_url}
+        Debes cambiar tu clave en el primer inicio de sesión.
+        Ingresa aquí: {login_url}
 
-            Saludos,
-            Equipo Dulcería Lili
-            """
+        Saludos,
+        Equipo Dulcería Lili
+        """
+        send_mail(subject, message, settings.EMAIL_HOST_USER, [usuario.email], fail_silently=False)
 
-            send_mail(
-                subject,
-                message,
-                settings.EMAIL_HOST_USER,
-                [usuario.email],
-                fail_silently=False
-            )
+        messages.success(request, f'Usuario creado. Clave temporal enviada a {usuario.email}')
+        return redirect('usuarios:lista')
 
-            messages.success(request, f'Usuario creado. Clave temporal enviada a {usuario.email}')
-            return redirect('usuarios:lista')
-
-        else:
-            form = UsuarioForm()
-
-        return render(request, 'usuarios/crear.html', {'form': form})
-
-
-    # ❌ Si hay errores, volver a mostrar lista con formulario
+    # Si el formulario NO es válido, mostramos los errores en la misma página
     qs = Usuario.objects.all().order_by('username')
     ctx = {
         'usuarios': qs,
-        'form': form,
+        'form': form,  # <-- aquí mantenemos el form con los errores
         'f_q': request.GET.get('q', ''),
         'f_rol': request.GET.get('rol', ''),
         'f_estado': request.GET.get('estado', ''),
     }
     messages.error(request, 'Revisa los errores del formulario.')
     return render(request, 'usuarios/Lista_usuario.html', ctx)
+
+
+
 
 # ✏️ EDITAR USUARIO
 @login_required

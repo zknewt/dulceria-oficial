@@ -2,7 +2,7 @@
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework import status, viewsets
-from rest_framework.permissions import IsAuthenticated, IsAdminOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.http import Http404, JsonResponse
 from .serializers import ProductoSerializer
 from productos.models import Producto
@@ -17,7 +17,7 @@ def info(request):
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
-    permission_classes = [IsAuthenticated, IsAdminOrReadOnly]
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get_object(self):
         try:
